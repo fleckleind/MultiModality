@@ -1,6 +1,6 @@
 # BLIP
 
-BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation
+[BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation](https://proceedings.mlr.press/v162/li22n/li22n.pdf)  
 
 BLIP: trains MED (Multi-modal mixture of Encoder-Decoder) to simultaneously pay attention to understanding- and generation-based tasks in Vision-Language Pre-training (VLP), and uses modules in MED to clear low-quality text-image data.
 
