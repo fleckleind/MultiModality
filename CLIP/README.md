@@ -30,11 +30,15 @@ CLIP jointly trains an image encoder and a text encoder to predict the correct p
 
 Given a batch of $N$ (image, text) pairs, CLIP is trained to predict which of the $N\times N$ possible (image, text) pairings across a batch acutally occured. CLIP then learns a multi-modal embedding space by jointly training an image encoder and text encoder to maximize the cosine similarity of the image and text embeddings of th $N$ real pairs in the batch with minimizing the cossine similarity of the embeddings of the $N^2-N$ incorrect pairings.
 
-Based on ConVIRT, CLIP mainly makes the following simplifications:
-1. CLIP initializes the Image Encoder randomly, rather than using ImageNet.
-2. CLIP only uses resize and squared crop in Image Transformation, and 
+CLIP uses ResNet or Vision Transformer as image encoder, CBOW or Text Transformer as text encoder. Based on ConVIRT, CLIP mainly makes the following simplifications:
+1. CLIP uses linear projection head with $L_2$ normalization.
+2. The temperature parameter $\tau$ of loss function in CLIP is learnable.
+3. CLIP randomly initializes the Image Encoder instead of ImageNet, remove text transformation, and only maintain resizing and squared cropping as image transformation.
 
-
+The inference (zero-shot prediction) of CLIP includes creating dataset classifier from label text and using former classifier for zero-shot prediction. The specific steps are summarized as follows:
+1. Sample all classes and send obtained $N$ input texts into text encoder to get text embedding corresponding to $N$ classes.
+2. Sample an image to be predicted and get its image embedding.
+3. Calculate cosine similarity with $N$ text embedding as key and current image embedding as query, and choose the highest cosine similarity (Top-1) as prediction class.
 
 
 
