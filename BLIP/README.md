@@ -16,6 +16,7 @@ Image-Grounded Text Encoder: insert additional cross-attention (CA) layer betwee
 Image-Grounded Text Decoder: replaces BiSA with casual self-attention, with shared CA and FFN in image-grounded text encoder, with [Decode] token to signal the beginning and end of a sequence.
 
 ### Pre-training Objectives
+#### Image-Text Contrastive Loss
 Image-Text Contrastive Loss (ITC): understanding-based objectives, to align the feature space of the image encoder and unimodal encoder by encouraging positive image-text pairs to have similar representation in contrast to the negative pairs. ITC is defined as the cross-entropy $H$ between similarity $p$ and ground-truth $y$, 
 ```math
 L_{ITC}=\frac{1}{2}E_{(I,T)\sim D}[H(y^{i2t}(I), p^{i2t}(I)) + H(y^{t2i}(T), p^{t2i}(T))]
@@ -24,14 +25,16 @@ With similarity function as $s(I,T)=g_v(v_{cls})^T g_w^\prime(w_{cls}^\prime)$ a
 ```math
 p_m^{i2t}(I)=\frac{exp(s(I,T_m)/\tau)}{\sum_{m=1}^M exp(s(I,T_m)/\tau)}, \quad
 p_m^{t2i}(T)=\frac{exp(s(T,I_m)/\tau)}{\sum_{m=1}^M exp(s(T,I_m)/\tau)}
-```  
+```
 
+#### Image-Text Matching Loss
 Image-Text Matching Loss (ITM): a binary classification task, predicting whether an image-text pair is positive (matched) or negative (unmatched), to learn image-text multi-modal representation capturing the fine-grained alignment between vision and language.
 ```math
 L_{ITM}=E_{(I,T)\sim D} H(y^{itm}, p^{itm}(I,T))
 ```
 where two-class probability $p^{itm}(I,T)$ is calculated by [Encode] token with a FC layer followed by softmax, y^{itm} is a 2-dimensional one-hot vector representing the ground-truth label. 
 
+#### Language Modeling Loss
 Language Modeling Loss (LM): to generate textual descriptions given an image, optimizes model with cross entropy loss (label smoothing=0.1) to maximize the likelihood of the text in an autoregressive manner.
 ```math
 L_{LM}=E_{(I,T)\sim D} H(y^{msk}, p^{msk}(I,T))
