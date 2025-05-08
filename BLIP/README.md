@@ -34,15 +34,14 @@ L_{ITM}=E_{(I,T)\sim D} H(y^{itm}, p^{itm}(I,T))
 ```
 where two-class probability $p^{itm}(I,T)$ is calculated by [Encode] token with a FC layer followed by softmax, y^{itm} is a 2-dimensional one-hot vector representing the ground-truth label. 
 
+Hard (challenging) negative mining strategy is proposed to accelerate model convergence and improve generalization performance. A negative image-text pair is haed if they share similar semantics but differ in fine-grained details, which is defined with contrastive similarity used in ITC. For each image in a mini-batch, one negative image/text with more similar to corresponding text/image is sampled from the same batch.
+
 #### Language Modeling Loss
 Language Modeling Loss (LM): to generate textual descriptions given an image, optimizes model with cross entropy loss (label smoothing=0.1) to maximize the likelihood of the text in an autoregressive manner.
 ```math
 L_{LM}=E_{(I,T)\sim D} H(y^{msk}, p^{msk}(I,T))
 ```
 where $y^{msk}$ is a one-hot vocabulary distribution where the ground-truth token has a probability of 1, and $p^{msk}(I,T)$ denotes the predicted probability for [Decode] token.
-
-### Hard Negative Mining
-Hard (challenging) negative mining strategy is proposed to accelerate model convergence and improve generalization performance. A negative image-text pair is haed if they share similar semantics but differ in fine-grained details, which is defined with contrastive similarity used in ITC. For each image in a mini-batch, one negative image/text with more similar to corresponding text/image is sampled from the same batch.
 
 ## CapFilt: Captioning and Filtering
 CapFilt: a new dataset boostrapping method for learning from noisy image-text pairs, including a captioner to produce synthetic captions given web images, and a filter to remove noisy captions from both the original web texts and the synthetic texts.
