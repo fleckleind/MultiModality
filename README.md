@@ -1,4 +1,4 @@
-# MultiModality
+# Multi-Modal
 
 
 ## Zero-Shot
