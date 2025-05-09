@@ -3,6 +3,7 @@
 
 BLIP: a new Vision-Language Pre-training (VLP) framework flexibly transfers to both vision-language understanding and generation tasks, and effectively utilizes the noisy web data by bootstrapping the captions, with a captioner generating captions and a filter removing noisy ones.
 
+
 ## MED: Multimodal mixture of Encoder-Decoder
 MED can operate either as a unimodal encoder, an image-grounded text encoder, or an image-grounded text decoder, with jointly pre-trained with three vision-language objectives including image-text contrastive learning, image-text matching, and image-conditioned language modeling.  
 
@@ -41,6 +42,7 @@ L_{LM}=E_{(I,T)\sim D} H(y^{msk}, p^{msk}(I,T))
 ```
 where $y^{msk}$ is a one-hot vocabulary distribution where the ground-truth token has a probability of 1, and $p^{msk}(I,T)$ denotes the predicted probability for [Decode] token.
 
+
 ## CapFilt: Captioning and Filtering
 CapFilt: a new dataset boostrapping method for learning from noisy image-text pairs, including a captioner to produce synthetic captions given web images, and a filter to remove noisy captions from both the original web texts and the synthetic texts.
 
@@ -48,6 +50,38 @@ The captioner is an image-grounded text decoder, fine-tuned with the LM objectiv
 The filter is an image-grounded text encoder, fine-tuned with the ITC and ITM objectives to learn whether a text matches an image. The filter removes noisy texts in both the original web texts $T_w$ and the synthetic texts $T_s$, where a text is considered to be noisy if the ITM head predicts it as unmatched to the image.
 Finally, the filtered image-text pairs are combined with the human-annotated pairs to form a new dataset for new model pre-training.
 
-## Reference
+
+## ALBEF
 [Align before Fuse: Vision and Language Representation Learning with Momentum Distillation](https://proceedings.neurips.cc/paper_files/paper/2021/file/505259756244493872b7709a8a01b536-Paper.pdf)
+
+ALBEF: BLIP baseline, propose momentum distillation for image-text contrastive learning and (masked) language modeling, and hard negative mining for image-text matching.
+
+### Momentum Distillation
+Momentum Model: a continuously-evolving teacher consisting of exponential-moving-average versions of the unimodal and multimodal encoders.
+
+Momentum Distillation Training Process: train the base model such that its prediction match the ones from momentum model, with image-text similarity computation using features from momentum unimodal encoders as,
+```math
+s^\prime(I,T)=g_v^\prime(v_{cls}^\prime)^\intercal g_w^\prime(w_{cls}^\prime),
+\quad
+s^\prime(T,I)=g_w^\prime(w_{cls}^\prime)^\intercal g_v^\prime(v_{cls}^\prime)
+```
+then the soft pseudo-targets $q^{i2t}$ and $q^{t2i}$ is calculated as follows,
+```math
+p_m^{i2t}(I)=\frac{exp(s^\prime(I,T_m)/\tau)}{\sum_{m=1}^M exp(s^\prime(I,T_m)/\tau)},
+\quad
+p_m^{t2i}(T)=\frac{exp(s^\prime(T,I_m)/\tau)}{\sum_{m=1}^M exp(s^\prime(T,I_m)/\tau)}
+```
+Then the $ITC_{MoD}$ is defined as:
+```math
+L_{itc}^{mod}=(1-\alpha)L_{itc}+\frac{\alpha}{2} E_{(I,T)\sim D}[KL(q^{i2t}(I)\lVert p^{i2t}(I))+KL(q^{t2i}(T)\lVert p^{t2i}(T))]
+```
+With $q^{msk}(I,\hat{T})$ representing as the momentum models's prediction probability for the masked token, the $MLM_{MoD}$ loss is:
+```math
+L_{mlm}^{mod}=(1-\alpha)L_{mlm}+\alpha E_{(I,\hat{T})\sim D} KL(q^{msk}(I,\hat{T})\lVert p^{msk}(I,\hat{T}))
+```
+
+### Hard Negative Mining Strategy
+Hard/Challenge Negative Mining Strategy: to accelerate model convergence and improve generalization performance. 
+
+Hard Negative Image-Text Pair: share similar semantics but differ in fine-grained details, which is defined with contrastive similarity used in ITC. For each image in a mini-batch, one negative image/text more similar to corresponding text/image is sampled from the same batch.
 
