@@ -27,16 +27,12 @@ p_m^{i2t}(I)=\frac{exp(s(I,T_m)/\tau)}{\sum_{m=1}^M exp(s(I,T_m)/\tau)}, \quad
 p_m^{t2i}(T)=\frac{exp(s(T,I_m)/\tau)}{\sum_{m=1}^M exp(s(T,I_m)/\tau)}
 ```
 
-
-
 #### Image-Text Matching Loss
 Image-Text Matching Loss (ITM): a binary classification task, predicting whether an image-text pair is positive (matched) or negative (unmatched), to learn image-text multi-modal representation capturing the fine-grained alignment between vision and language.
 ```math
 L_{ITM}=E_{(I,T)\sim D} H(y^{itm}, p^{itm}(I,T))
 ```
 where two-class probability $p^{itm}(I,T)$ is calculated by [Encode] token with a FC layer followed by softmax, y^{itm} is a 2-dimensional one-hot vector representing the ground-truth label. 
-
-Hard (challenging) negative mining strategy is proposed to accelerate model convergence and improve generalization performance. A negative image-text pair is haed if they share similar semantics but differ in fine-grained details, which is defined with contrastive similarity used in ITC. For each image in a mini-batch, one negative image/text with more similar to corresponding text/image is sampled from the same batch.
 
 #### Language Modeling Loss
 Language Modeling Loss (LM): to generate textual descriptions given an image, optimizes model with cross entropy loss (label smoothing=0.1) to maximize the likelihood of the text in an autoregressive manner.
