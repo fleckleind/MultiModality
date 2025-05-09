@@ -27,6 +27,8 @@ p_m^{i2t}(I)=\frac{exp(s(I,T_m)/\tau)}{\sum_{m=1}^M exp(s(I,T_m)/\tau)}, \quad
 p_m^{t2i}(T)=\frac{exp(s(T,I_m)/\tau)}{\sum_{m=1}^M exp(s(T,I_m)/\tau)}
 ```
 
+
+
 #### Image-Text Matching Loss
 Image-Text Matching Loss (ITM): a binary classification task, predicting whether an image-text pair is positive (matched) or negative (unmatched), to learn image-text multi-modal representation capturing the fine-grained alignment between vision and language.
 ```math
@@ -50,9 +52,6 @@ The captioner is an image-grounded text decoder, fine-tuned with the LM objectiv
 The filter is an image-grounded text encoder, fine-tuned with the ITC and ITM objectives to learn whether a text matches an image. The filter removes noisy texts in both the original web texts $T_w$ and the synthetic texts $T_s$, where a text is considered to be noisy if the ITM head predicts it as unmatched to the image.
 Finally, the filtered image-text pairs are combined with the human-annotated pairs to form a new dataset for new model pre-training.
 
-
-
-
-
-
+## Reference
+[Align before Fuse: Vision and Language Representation Learning with Momentum Distillation](https://proceedings.neurips.cc/paper_files/paper/2021/file/505259756244493872b7709a8a01b536-Paper.pdf)
 
