@@ -1,5 +1,13 @@
 # Multi-Modal
 
+<details>
+<summary> ToDoList </summary>
+  
+```text
+Flamingo
+```
+</details>
+
 ## Training Methodology
 LLMs training methodologies typically follow one of the two strategies:
 1. Light pre-training procedure and heavily relying on visual instruction tuning, as seen in the LLaVA series.
